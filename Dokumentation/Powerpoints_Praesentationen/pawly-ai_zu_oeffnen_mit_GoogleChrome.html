@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PawlyAI – Walk. Feed. Care.</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #3bbfa0;
+    --teal-dark: #2a9d85;
+    --orange: #f4813a;
+    --red: #e85252;
+    --yellow: #f5c842;
+    --green: #5bc45a;
+    --bg: #f0f7f4;
+    --card: #ffffff;
+    --text: #1a2e28;
+    --muted: #7a9e96;
+    --shadow: 0 4px 20px rgba(0,0,0,0.10);
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  /* PHONE SHELL */
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: #0a0a0a;
+    border-radius: 52px;
+    padding: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35), inset 0 0 0 1px #333;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    background: var(--bg);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NOTCH */
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 34px;
+    background: #0a0a0a;
+    border-radius: 0 0 20px 20px;
+    z-index: 50;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    position: relative;
+    z-index: 10;
+  }
+
+  .status-time { font-size: 14px; font-weight: 800; }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons svg { width: 14px; height: 14px; }
+
+  /* VIEWS */
+  .view { display: none; flex-direction: column; flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .view.active { display: flex; }
+
+  /* ───── HOME VIEW ───── */
+  .home-hero {
+    position: relative;
+    background: linear-gradient(160deg, #c8edd8 0%, #a8dfc8 40%, #7ecbb0 100%);
+    padding: 44px 20px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px; right: -20px;
+    height: 60px;
+    background: var(--bg);
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .logo-paw { font-size: 28px; }
+
+  .logo-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 32px;
+    color: var(--text);
+  }
+
+  .logo-text span { color: var(--teal); }
+
+  .tagline {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .pet-container {
+    position: relative;
+    height: 180px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .pet-emoji {
+    font-size: 110px;
+    line-height: 1;
+    animation: petBob 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s;
+  }
+
+  .pet-emoji:active { transform: scale(0.92); }
+
+  @keyframes petBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .pet-mood-badge {
+    position: absolute;
+    top: 8px; right: 60px;
+    background: white;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--teal-dark);
+    box-shadow: var(--shadow);
+    animation: floatIn 0.5s ease;
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STEPS CARD */
+  .steps-card {
+    margin: 24px 16px 12px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+  }
+
+  .steps-left { display: flex; align-items: center; gap: 10px; }
+  .steps-icon { font-size: 24px; }
+  .steps-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .steps-count { font-size: 26px; font-weight: 900; color: var(--text); line-height: 1; }
+
+  .walk-cta {
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 8px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .walk-cta:active { transform: scale(0.96); }
+  .walk-cta:hover { background: var(--teal-dark); }
+
+  /* STATS CARD */
+  .stats-card {
+    margin: 0 16px 12px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .stats-title {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .stat-row:last-child { margin-bottom: 0; }
+
+  .stat-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text);
+    width: 72px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .stat-bar-bg {
+    flex: 1;
+    height: 10px;
+    background: #e8f0ed;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .stat-pct {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text);
+    width: 34px;
+    text-align: right;
+  }
+
+  .stat-alert {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  /* ACTION BUTTONS */
+  .action-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 16px 12px;
+  }
+
+  .action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: var(--card);
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .action-btn:active { transform: scale(0.94); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .action-btn.walk { background: linear-gradient(135deg, #3bbfa0, #2a9d85); }
+  .action-btn.feed { background: linear-gradient(135deg, #f4813a, #e06020); }
+  .action-btn.care { background: linear-gradient(135deg, #e85252, #c83e3e); }
+
+  .action-btn-icon { font-size: 24px; }
+  .action-btn-label { font-size: 11px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* JOURNEY CARD */
+  .journey-card {
+    margin: 0 16px 20px;
+    background: linear-gradient(135deg, #1a2e28, #2a4a40);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+  }
+
+  .journey-left { }
+  .journey-label { font-size: 10px; font-weight: 800; color: #7ecbb0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .journey-level { font-size: 13px; font-weight: 800; color: white; margin: 2px 0; }
+  .journey-xp {
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 6px;
+    width: 120px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .journey-xp-fill {
+    height: 100%;
+    width: 62%;
+    background: linear-gradient(90deg, #3bbfa0, #7ecbb0);
+    border-radius: 6px;
+  }
+
+  .lets-go-btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 20px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    box-shadow: 0 4px 12px rgba(91,196,90,0.4);
+  }
+
+  .lets-go-btn:active { transform: scale(0.95); }
+
+  /* ───── FEED VIEW ───── */
+  .feed-hero {
+    background: linear-gradient(160deg, #ffe8d4 0%, #ffd0b0 100%);
+    padding: 50px 20px 24px;
+    text-align: center;
+  }
+
+  .view-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 26px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .view-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+  .food-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 16px 12px;
+  }
+
+  .food-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s;
+    border: 2px solid transparent;
+  }
+
+  .food-card:active { transform: scale(0.96); }
+  .food-card.selected { border-color: var(--orange); }
+
+  .food-emoji { font-size: 36px; margin-bottom: 6px; }
+  .food-name { font-size: 13px; font-weight: 800; color: var(--text); }
+  .food-stat { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+  .feed-btn {
+    margin: 0 16px 20px;
+    background: linear-gradient(135deg, #f4813a, #e06020);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 16px;
+    width: calc(100% - 32px);
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(244,129,58,0.4);
+    transition: transform 0.15s;
+  }
+
+  .feed-btn:active { transform: scale(0.97); }
+
+  /* ───── CARE VIEW ───── */
+  .care-hero {
+    background: linear-gradient(160deg, #ffd6d6 0%, #ffb8b8 100%);
+    padding: 50px 20px 24px;
+    text-align: center;
+  }
+
+  .care-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 16px 12px;
+  }
+
+  .care-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .care-card:active { transform: scale(0.96); }
+  .care-icon { font-size: 32px; margin-bottom: 8px; }
+  .care-name { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+  .care-desc { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+  /* ───── WALK VIEW ───── */
+  .walk-map {
+    background: linear-gradient(160deg, #c8edd8 0%, #8ecfba 100%);
+    padding: 50px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-visual {
+    background: #d4eadf;
+    border-radius: 20px;
+    margin: 16px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-path {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-path svg { width: 100%; height: 100%; opacity: 0.4; }
+
+  .map-pet {
+    font-size: 44px;
+    position: relative;
+    z-index: 2;
+    animation: walkPet 1s steps(2) infinite;
+  }
+
+  @keyframes walkPet {
+    0% { transform: scaleX(1); }
+    50% { transform: scaleX(-1); }
+  }
+
+  .walk-stats-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 16px 12px;
+  }
+
+  .walk-stat-card {
+    flex: 1;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .walk-stat-num { font-size: 24px; font-weight: 900; color: var(--text); }
+  .walk-stat-lbl { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+
+  .walk-control-btn {
+    margin: 0 16px 20px;
+    background: linear-gradient(135deg, #3bbfa0, #2a9d85);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 16px;
+    width: calc(100% - 32px);
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(59,191,160,0.4);
+    transition: transform 0.15s;
+  }
+
+  .walk-control-btn:active { transform: scale(0.97); }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    display: flex;
+    background: white;
+    border-top: 1px solid #e8f0ed;
+    padding: 10px 0 16px;
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+    padding: 0;
+    transition: transform 0.15s;
+  }
+
+  .nav-item:active { transform: scale(0.9); }
+
+  .nav-icon { font-size: 20px; }
+
+  .nav-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .nav-item.active .nav-label { color: var(--teal); }
+  .nav-item.active .nav-icon { filter: none; }
+
+  .nav-dot {
+    width: 4px; height: 4px;
+    background: var(--teal);
+    border-radius: 50%;
+    margin-top: 2px;
+    opacity: 0;
+  }
+
+  .nav-item.active .nav-dot { opacity: 1; }
+
+  /* TOAST */
+  .toast {
+    position: absolute;
+    top: 50px; left: 50%; transform: translateX(-50%);
+    background: var(--teal-dark);
+    color: white;
+    border-radius: 14px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 800;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: opacity 0.3s;
+  }
+
+  .toast.show { opacity: 1; }
+
+  /* SCROLLBAR */
+  .view::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">14:38</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ═══ HOME VIEW ═══ -->
+    <div class="view active" id="view-home">
+
+      <div class="home-hero">
+        <div class="logo-row">
+          <span class="logo-paw">🐾</span>
+          <span class="logo-text">Pawly<span>AI</span></span>
+        </div>
+        <div class="tagline">Walk. Feed. Care. Like a real pet.</div>
+        <div class="pet-container">
+          <div class="pet-mood-badge" id="moodBadge">😄 Happy!</div>
+          <div class="pet-emoji" id="petEmoji" onclick="petTap()">🐕</div>
+        </div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="steps-card">
+        <div class="steps-left">
+          <span class="steps-icon">👟</span>
+          <div>
+            <div class="steps-label">Steps Today</div>
+            <div class="steps-count" id="stepCount">4,812</div>
+          </div>
+        </div>
+        <button class="walk-cta" onclick="switchView('walk')">Time to Walk! 🏃</button>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-card">
+        <div class="stats-title">Buddy's Status</div>
+
+        <div class="stat-row">
+          <span class="stat-icon">🍖</span>
+          <span class="stat-label">Hunger</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-hunger" style="width:30%; background: linear-gradient(90deg,#e85252,#f4813a);"></div>
+          </div>
+          <span class="stat-pct" id="pct-hunger">30%</span>
+          <span class="stat-alert" style="background:#ffe0e0; color:#e85252;">Feed Me!</span>
+        </div>
+
+        <div class="stat-row">
+          <span class="stat-icon">😊</span>
+          <span class="stat-label">Happy</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-happy" style="width:85%; background: linear-gradient(90deg,#f5c842,#5bc45a);"></div>
+          </div>
+          <span class="stat-pct" id="pct-happy">85%</span>
+          <span class="stat-alert" style="background:#fff8d6; color:#c8a000;">Play!</span>
+        </div>
+
+        <div class="stat-row">
+          <span class="stat-icon">⚡</span>
+          <span class="stat-label">Energy</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-energy" style="width:74%; background: linear-gradient(90deg,#3bbfa0,#5bc45a);"></div>
+          </div>
+          <span class="stat-pct" id="pct-energy">74%</span>
+          <span class="stat-alert" style="background:#e0f5ee; color:#2a9d85;">Good</span>
+        </div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-row">
+        <button class="action-btn walk" onclick="switchView('walk')">
+          <span class="action-btn-icon">🐾</span>
+          <span class="action-btn-label">Walk</span>
+        </button>
+        <button class="action-btn feed" onclick="switchView('feed')">
+          <span class="action-btn-icon">🥩</span>
+          <span class="action-btn-label">Feed</span>
+        </button>
+        <button class="action-btn care" onclick="switchView('care')">
+          <span class="action-btn-icon">❤️</span>
+          <span class="action-btn-label">Care</span>
+        </button>
+      </div>
+
+      <!-- JOURNEY -->
+      <div class="journey-card">
+        <div class="journey-left">
+          <div class="journey-label">Start your journey!</div>
+          <div class="journey-level">Level 5 · Explorer 🗺️</div>
+          <div class="journey-xp">
+            <div class="journey-xp-fill"></div>
+          </div>
+        </div>
+        <button class="lets-go-btn" onclick="showToast('Adventure starts! 🐾')">LET'S GO!</button>
+      </div>
+
+    </div>
+
+    <!-- ═══ WALK VIEW ═══ -->
+    <div class="view" id="view-walk">
+      <div class="walk-map">
+        <div class="view-title">🐾 Walk with Buddy</div>
+        <div class="view-sub">Your steps power Buddy's adventure!</div>
+      </div>
+
+      <div class="map-visual" style="margin:16px;">
+        <div class="map-path">
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10,80 Q75,20 150,80 T290,80" stroke="#3bbfa0" stroke-width="4" fill="none" stroke-dasharray="8 4"/>
+          </svg>
+        </div>
+        <span class="map-pet">🐕</span>
+      </div>
+
+      <div class="walk-stats-row">
+        <div class="walk-stat-card">
+          <div class="walk-stat-num" id="walkSteps">4,812</div>
+          <div class="walk-stat-lbl">Steps</div>
+        </div>
+        <div class="walk-stat-card">
+          <div class="walk-stat-num">2.4</div>
+          <div class="walk-stat-lbl">km</div>
+        </div>
+        <div class="walk-stat-card">
+          <div class="walk-stat-num">28</div>
+          <div class="walk-stat-lbl">min</div>
+        </div>
+      </div>
+
+      <div class="stats-card" style="margin: 0 16px 12px;">
+        <div class="stats-title">Buddy's Reaction</div>
+        <div style="font-size:13px; color:var(--text); font-weight:700; line-height:1.5;">
+          🐕 Buddy is <strong style="color:var(--teal);">excited</strong> about today's walk!<br>
+          <span style="font-weight:600; color:var(--muted);">Keep going — 2,000 more steps for +10 Happiness!</span>
+        </div>
+      </div>
+
+      <button class="walk-control-btn" id="walkBtn" onclick="toggleWalk()">▶️ Start Walk</button>
+    </div>
+
+    <!-- ═══ FEED VIEW ═══ -->
+    <div class="view" id="view-feed">
+      <div class="feed-hero">
+        <div class="view-title">🥩 Feed Buddy</div>
+        <div class="view-sub">Buddy is hungry! Choose a meal.</div>
+        <div style="font-size:60px; margin-top:8px; animation: petBob 2s ease-in-out infinite;">🐕</div>
+      </div>
+
+      <div class="food-grid">
+        <div class="food-card" onclick="selectFood(this,'Kibble','🦴')">
+          <div class="food-emoji">🦴</div>
+          <div class="food-name">Dry Kibble</div>
+          <div class="food-stat">+25 Hunger · +5 Energy</div>
+        </div>
+        <div class="food-card" onclick="selectFood(this,'Meat','🥩')">
+          <div class="food-emoji">🥩</div>
+          <div class="food-name">Fresh Meat</div>
+          <div class="food-stat">+40 Hunger · +10 Happy</div>
+        </div>
+        <div class="food-card" onclick="selectFood(this,'Treats','🍪')">
+          <div class="food-emoji">🍪</div>
+          <div class="food-name">Treats</div>
+          <div class="food-stat">+10 Hunger · +20 Happy</div>
+        </div>
+        <div class="food-card" onclick="selectFood(this,'Water','💧')">
+          <div class="food-emoji">💧</div>
+          <div class="food-name">Fresh Water</div>
+          <div class="food-stat">+15 Hunger · +5 Energy</div>
+        </div>
+      </div>
+
+      <button class="feed-btn" id="feedBtn" onclick="feedPet()">🍽️ Feed Buddy</button>
+    </div>
+
+    <!-- ═══ CARE VIEW ═══ -->
+    <div class="view" id="view-care">
+      <div class="care-hero">
+        <div class="view-title">❤️ Care for Buddy</div>
+        <div class="view-sub">Keep Buddy happy and healthy!</div>
+        <div style="font-size:60px; margin-top:8px; animation: petBob 2.5s ease-in-out infinite;">🐕</div>
+      </div>
+
+      <div class="care-grid">
+        <div class="care-card" onclick="docare('Bath','🛁', 20)">
+          <div class="care-icon">🛁</div>
+          <div class="care-name">Bath Time</div>
+          <div class="care-desc">+15 Happy · +10 Health</div>
+        </div>
+        <div class="care-card" onclick="docare('Play','🎾', 15)">
+          <div class="care-icon">🎾</div>
+          <div class="care-name">Playtime</div>
+          <div class="care-desc">+20 Happy · +5 Energy</div>
+        </div>
+        <div class="care-card" onclick="docare('Vet','🏥', 5)">
+          <div class="care-icon">🏥</div>
+          <div class="care-name">Vet Check</div>
+          <div class="care-desc">+30 Health · +5 Happy</div>
+        </div>
+        <div class="care-card" onclick="docare('Grooming','✂️', 10)">
+          <div class="care-icon">✂️</div>
+          <div class="care-name">Grooming</div>
+          <div class="care-desc">+10 Happy · +10 Bond</div>
+        </div>
+        <div class="care-card" onclick="docare('Sleep','😴', 25)">
+          <div class="care-icon">😴</div>
+          <div class="care-name">Rest Time</div>
+          <div class="care-desc">+30 Energy · +5 Happy</div>
+        </div>
+        <div class="care-card" onclick="docare('Training','🎓', 10)">
+          <div class="care-icon">🎓</div>
+          <div class="care-name">Training</div>
+          <div class="care-desc">+20 XP · +10 Happy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <button class="nav-item active" id="nav-home" onclick="switchView('home')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+        <div class="nav-dot"></div>
+      </button>
+      <button class="nav-item" id="nav-walk" onclick="switchView('walk')">
+        <span class="nav-icon">🐾</span>
+        <span class="nav-label">Walk</span>
+        <div class="nav-dot"></div>
+      </button>
+      <button class="nav-item" id="nav-feed" onclick="switchView('feed')">
+        <span class="nav-icon">🥩</span>
+        <span class="nav-label">Feed</span>
+        <div class="nav-dot"></div>
+      </button>
+      <button class="nav-item" id="nav-care" onclick="switchView('care')">
+        <span class="nav-icon">❤️</span>
+        <span class="nav-label">Care</span>
+        <div class="nav-dot"></div>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let selectedFood = null;
+  let walkActive = false;
+  let walkInterval = null;
+
+  const stats = { hunger: 30, happy: 85, energy: 74, steps: 4812 };
+
+  function switchView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function petTap() {
+    const moods = ['😄 Happy!', '🥰 Loves you!', '😋 Hungry...', '⚡ Full of energy!', '🎾 Wanna play!'];
+    document.getElementById('moodBadge').textContent = moods[Math.floor(Math.random() * moods.length)];
+    showToast('Buddy says hi! 🐾');
+  }
+
+  function updateBars() {
+    ['hunger','happy','energy'].forEach(k => {
+      document.getElementById('bar-' + k).style.width = stats[k] + '%';
+      document.getElementById('pct-' + k).textContent = stats[k] + '%';
+    });
+    document.getElementById('stepCount').textContent = stats.steps.toLocaleString();
+    document.getElementById('walkSteps').textContent = stats.steps.toLocaleString();
+  }
+
+  function selectFood(card, name, emoji) {
+    document.querySelectorAll('.food-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedFood = name;
+  }
+
+  function feedPet() {
+    const gains = { Kibble: {hunger:25,energy:5}, Meat: {hunger:40,happy:10}, Treats: {hunger:10,happy:20}, Water: {hunger:15,energy:5} };
+    const g = gains[selectedFood] || {hunger:20};
+    if (g.hunger) stats.hunger = Math.min(100, stats.hunger + g.hunger);
+    if (g.happy)  stats.happy  = Math.min(100, stats.happy  + g.happy);
+    if (g.energy) stats.energy = Math.min(100, stats.energy + g.energy);
+    updateBars();
+    showToast('Buddy loved it! 😋 +' + (g.hunger||0) + ' Hunger');
+    document.querySelectorAll('.food-card').forEach(c => c.classList.remove('selected'));
+    selectedFood = null;
+  }
+
+  function toggleWalk() {
+    walkActive = !walkActive;
+    const btn = document.getElementById('walkBtn');
+    if (walkActive) {
+      btn.textContent = '⏹️ Stop Walk';
+      btn.style.background = 'linear-gradient(135deg, #e85252, #c83e3e)';
+      walkInterval = setInterval(() => {
+        stats.steps += Math.floor(Math.random() * 15) + 5;
+        stats.energy = Math.max(0, stats.energy - 1);
+        stats.happy  = Math.min(100, stats.happy + 1);
+        updateBars();
+      }, 500);
+      showToast('Walk started! 🐾 Let\'s go!');
+    } else {
+      btn.textContent = '▶️ Start Walk';
+      btn.style.background = 'linear-gradient(135deg, #3bbfa0, #2a9d85)';
+      clearInterval(walkInterval);
+      showToast('Great walk! 🎉 Buddy is happy!');
+    }
+  }
+
+  function docare(action, emoji, bonus) {
+    stats.happy = Math.min(100, stats.happy + bonus);
+    updateBars();
+    showToast(emoji + ' ' + action + ' done! +' + bonus + ' Happy');
+  }
+</script>
+</body>
+</html>

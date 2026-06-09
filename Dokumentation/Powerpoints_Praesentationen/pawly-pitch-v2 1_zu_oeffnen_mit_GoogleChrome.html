@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawlyAI – NABC Pitch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:   #3bbfa0;
+    --teal-d: #2a9d85;
+    --teal-l: #d0f5eb;
+    --peach:  #f4813a;
+    --peach-l:#fff0e6;
+    --pink:   #f87c9a;
+    --pink-l: #fde8ef;
+    --yellow: #f5c842;
+    --yellow-l:#fff9db;
+    --blue:   #6bb8f0;
+    --blue-l: #e3f3fd;
+    --green:  #5bc45a;
+    --bg:     #f6fdf9;
+    --card:   #ffffff;
+    --text:   #1a3028;
+    --muted:  #7aad98;
+    --shadow: 0 4px 24px rgba(59,191,160,0.10);
+    --radius: 22px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SOFT BG BLOBS ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 90% 5%,  rgba(91,196,90,0.13)  0%, transparent 60%),
+      radial-gradient(ellipse 45% 55% at 5%  85%,  rgba(248,124,154,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%,  rgba(59,191,160,0.05)  0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 28px 100px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 60px 0 56px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal-d);
+    background: var(--teal-l);
+    border-radius: 100px;
+    padding: 7px 18px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.1s ease forwards;
+  }
+
+  .hero-logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(48px, 8vw, 78px);
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s ease forwards;
+  }
+
+  .hero-logo span { color: var(--teal); }
+
+  .hero-tagline {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.3s ease forwards;
+  }
+
+  .hero-hook {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(22px, 4vw, 32px);
+    line-height: 1.35;
+    color: var(--text);
+    max-width: 680px;
+    margin: 0 auto 32px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s ease forwards;
+  }
+
+  .hero-hook em {
+    font-style: normal;
+    color: var(--teal);
+  }
+
+  .hero-stat-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.55s ease forwards;
+  }
+
+  .hero-stat {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 22px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  .hero-stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 32px;
+    color: var(--teal);
+    line-height: 1;
+  }
+
+  .hero-stat-lbl {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .section-letter {
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    color: white;
+  }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* letter colors */
+  .ltr-n { background: var(--peach); }
+  .ltr-a { background: var(--teal); }
+  .ltr-b { background: var(--pink); }
+  .ltr-c { background: var(--blue); }
+  .ltr-x { background: var(--green); }
+  .ltr-s { background: var(--yellow); color: var(--text) !important; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    border: 1.5px solid rgba(59,191,160,0.10);
+  }
+
+  .card-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .stripe-n { background: linear-gradient(90deg, var(--peach), #ffc69b); }
+  .stripe-a { background: linear-gradient(90deg, var(--teal), #88e8ce); }
+  .stripe-b { background: linear-gradient(90deg, var(--pink), #fbb8cc); }
+  .stripe-c { background: linear-gradient(90deg, var(--blue), #b3dcf8); }
+  .stripe-x { background: linear-gradient(90deg, var(--green), #a2e8a1); }
+  .stripe-s { background: linear-gradient(90deg, var(--yellow), #ffe599); }
+
+  .card-heading {
+    font-family: 'Fredoka One', cursive;
+    font-size: 26px;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+
+  .card-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #4a7065;
+    font-weight: 600;
+  }
+
+  .card-body strong { color: var(--text); font-weight: 800; }
+
+  /* ── APPROACH SPLIT ── */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .split-block {
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .split-block.idee  { background: var(--teal-l); }
+  .split-block.result{ background: #e8f9f5; }
+
+  .split-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal-d);
+    margin-bottom: 8px;
+  }
+
+  .split-block p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #3a7060;
+    font-weight: 600;
+  }
+
+  /* ── BENEFITS ── */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .benefit-block {
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .benefit-block.user { background: var(--yellow-l); }
+  .benefit-block.biz  { background: var(--teal-l); }
+
+  .benefit-tag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .benefit-block.user .benefit-tag { color: #c8930a; }
+  .benefit-block.biz  .benefit-tag { color: var(--teal-d); }
+
+  .benefit-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .benefit-item:last-child { margin-bottom: 0; }
+
+  .bdot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .benefit-block.user .bdot { background: var(--yellow); }
+  .benefit-block.biz  .bdot { background: var(--teal); }
+
+  .benefit-item p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3a7060;
+    font-weight: 600;
+  }
+
+  /* ── COMPETITION TABLE ── */
+  .comp-table {
+    margin-top: 20px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1.5px solid #d8f0ea;
+  }
+
+  .comp-row {
+    display: grid;
+    grid-template-columns: 190px 1fr 1fr;
+    padding: 14px 18px;
+    font-size: 13px;
+    border-bottom: 1px solid #e8f5f0;
+    align-items: start;
+    gap: 12px;
+  }
+
+  .comp-row:last-child { border-bottom: none; }
+
+  .comp-row.header {
+    background: var(--teal-l);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal-d);
+    font-weight: 800;
+    padding: 10px 18px;
+    align-items: center;
+  }
+
+  .comp-row:not(.header) { background: white; }
+  .comp-row:not(.header):nth-child(even) { background: #f9fdfc; }
+
+  .comp-name { font-weight: 800; color: var(--text); }
+  .comp-limit { color: #7aad98; font-weight: 600; line-height: 1.5; }
+  .comp-win   { color: var(--teal-d); font-weight: 700; line-height: 1.5; }
+
+  /* ── ACTION STEPS ── */
+  .action-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .action-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1.5px solid #e0f5ee;
+    background: var(--card);
+  }
+
+  .action-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 42px;
+    color: var(--teal-l);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .action-date {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--peach);
+    margin-bottom: 5px;
+  }
+
+  .action-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+
+  .action-desc {
+    font-size: 13px;
+    color: #7aad98;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  /* ── SUMMARY ── */
+  .summary-card {
+    background: linear-gradient(135deg, #d0f5eb 0%, #e8fbf5 60%, #fde8ef 100%);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    border: 1.5px solid rgba(59,191,160,0.2);
+    box-shadow: var(--shadow);
+  }
+
+  .summary-card p {
+    font-size: 17px;
+    line-height: 1.8;
+    font-weight: 700;
+    color: #2a6050;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .summary-card strong { color: var(--teal-d); }
+
+  .app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border-radius: 14px;
+    padding: 10px 22px;
+    margin-top: 28px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--muted);
+    box-shadow: var(--shadow);
+  }
+
+  .app-badge span { color: var(--text); }
+
+  /* ── SECTION SPACING ── */
+  .section { margin-bottom: 44px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 620px) {
+    .split, .benefits-grid { grid-template-columns: 1fr; }
+    .comp-row { grid-template-columns: 130px 1fr; }
+    .comp-win { display: none; }
+    .hero-stat-row { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">🐾 NABC Pitch </div>
+    <div class="hero-logo">Pawly<span>AI</span> 🐾</div>
+    <div class="hero-tagline">Walk. Feed. Care. Like a real pet.</div>
+
+    <div class="hero-hook">
+      Was wäre, wenn dein Hund dich zum Laufen bringt — ganz <em>ohne Leine?</em><br>
+      <span style="font-family:'Nunito',sans-serif; font-size:clamp(15px,2.2vw,19px); font-weight:700; color:#4a7065; line-height:1.7; display:block; margin-top:16px; max-width:600px; margin-left:auto; margin-right:auto;">
+        Pawly macht genau das möglich: ein virtueller Hund, der dich nicht zieht, sondern bewegt — weil du eine Bindung zu ihm aufbaust und Verantwortung für ihn übernimmst. So wird aus einem einfachen Spaziergang kein Muss, sondern ein Moment, auf den du dich freust.
+      </span>
+    </div>
+
+    <div class="hero-stat-row">
+      <div class="hero-stat">
+        <div class="hero-stat-num">72%</div>
+        <div class="hero-stat-lbl">zu wenig Bewegung</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3×</div>
+        <div class="hero-stat-lbl">mehr Schritte mit Hund</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">AR</div>
+        <div class="hero-stat-lbl">Hund in deiner Welt</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- N: NEED -->
+  <section class="section reveal">
+    <div class="section-label">
+      <span class="section-letter ltr-n">N</span>
+      <span class="section-title">Need · Unbefriedigter Bedarf</span>
+    </div>
+    <div class="card">
+      <div class="card-stripe stripe-n"></div>
+      <div class="card-heading">Menschen wollen sich bewegen.<br>Aber sie tun es trotzdem nicht.</div>
+      <p class="card-body">
+        Viele Menschen wissen, dass Bewegung und frische Luft wichtig sind — aber im Alltag fehlt die Motivation, tatsächlich rauszugehen. Besonders betroffen: <strong>Menschen mit sitzendem Lebensstil</strong>, junge Erwachsene mit hoher Bildschirmzeit sowie Nutzer, die gesündere Routinen aufbauen möchten, aber klassische Fitnessangebote als zu trocken oder anstrengend empfinden.
+        <br><br>
+        Fitness-Apps messen Schritte, aber sie schaffen keine <strong>emotionale Motivation</strong>. Was wirklich funktioniert — das wissen Hundebesitzer seit Jahrhunderten: Ein Lebewesen, das auf dich wartet, bringt dich raus. Täglich. Ohne Ausreden.
+      </p>
+    </div>
+  </section>
+
+  <!-- A: APPROACH -->
+  <section class="section reveal">
+    <div class="section-label">
+      <span class="section-letter ltr-a">A</span>
+      <span class="section-title">Approach · Lösung</span>
+    </div>
+    <div class="card">
+      <div class="card-stripe stripe-a"></div>
+      <div class="card-heading">Ein virtueller Hund,<br>der echte Bedürfnisse hat.</div>
+      <p class="card-body">
+        Pawly ist eine <strong>Augmented-Reality-App</strong>, in der Nutzer einen virtuellen Hund adoptieren, pflegen und im Alltag begleiten. Dieser Hund hat Bedürfnisse wie Spaziergänge und wird über die Smartphone-Kamera sichtbar in die echte Umgebung eingebunden.
+      </p>
+      <div class="split">
+        <div class="split-block idee">
+          <div class="split-label">💡 Die Idee</div>
+          <p>Nutzer adoptieren einen virtuellen Hund (z. B. Golden Retriever), der durch AR in der realen Welt erscheint. Er hat echte Bedürfnisse: Spazierengehen, Füttern, Spielen, Ruhen — und reagiert auf die tatsächliche Bewegung des Nutzers.</p>
+        </div>
+        <div class="split-block result">
+          <div class="split-label">✅ Das Ergebnis</div>
+          <p>Bewegung wird nicht mehr als Pflicht wahrgenommen, sondern als spielerische, emotionale Interaktion. Nutzer gehen häufiger nach draußen, sammeln mehr Schritte und bauen gesündere Gewohnheiten auf — ohne dass es sich wie Training anfühlt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B: BENEFITS -->
+  <section class="section reveal">
+    <div class="section-label">
+      <span class="section-letter ltr-b">B</span>
+      <span class="section-title">Benefits per Costs · Wert</span>
+    </div>
+    <div class="card">
+      <div class="card-stripe stripe-b"></div>
+      <div class="card-heading">Besser für Nutzer.<br>Skalierbares Business.</div>
+      <div class="benefits-grid">
+        <div class="benefit-block user">
+          <div class="benefit-tag">🧍 Für Endnutzer</div>
+          <div class="benefit-item">
+            <div class="bdot"></div>
+            <p><strong>Mehr Motivation durch emotionale Bindung:</strong> Spielerische Anreize ersetzen Willenskraft — Nutzer gehen raus, weil ihr Hund sie braucht.</p>
+          </div>
+          <div class="benefit-item">
+            <div class="bdot"></div>
+            <p><strong>Gesündere Routinen, leichter aufgebaut:</strong> Mehr Zeit an der frischen Luft und einfachere Alltagsintegration — ohne dass es sich wie Sport anfühlt.</p>
+          </div>
+        </div>
+        <div class="benefit-block biz">
+          <div class="benefit-tag">🏢 Für das Unternehmen</div>
+          <div class="benefit-item">
+            <div class="bdot"></div>
+            <p><strong>Hohe Nutzerbindung:</strong> Tägliche Interaktion mit dem virtuellen Begleiter sorgt für starke Retention weit über typische Fitness-Apps hinaus.</p>
+          </div>
+          <div class="benefit-item">
+            <div class="bdot"></div>
+            <p><strong>Vielseitige Monetarisierung:</strong> Premium-Breeds, Accessoires, Partnerschaften im Health- und Lifestyle-Bereich bieten skalierbares Potenzial.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C: COMPETITION -->
+  <section class="section reveal">
+    <div class="section-label">
+      <span class="section-letter ltr-c">C</span>
+      <span class="section-title">Competition · Wettbewerb</span>
+    </div>
+    <div class="card">
+      <div class="card-stripe stripe-c"></div>
+      <div class="card-heading">Besser als die Alternative —<br>weil Emotionen zählen.</div>
+      <p class="card-body">
+        Zwei Hauptkonkurrenten kommen aus unterschiedlichen Richtungen — keine verbindet echte Bewegung mit nachhaltiger emotionaler Bindung so wie Pawly.
+      </p>
+      <div class="comp-table">
+        <div class="comp-row header">
+          <span>Konkurrent</span>
+          <span>Schwäche</span>
+          <span>Pawly-Vorteil</span>
+        </div>
+        <div class="comp-row">
+          <span class="comp-name">🎮 Pokémon GO</span>
+          <span class="comp-limit">Motiviert zu Bewegung, aber die emotionale Bindung zu einer einzelnen Figur ist gering — Sammeln statt Beziehung.</span>
+          <span class="comp-win">Langfristige 1:1-Beziehung mit dem Hund schafft nachhaltigere und tiefere Motivation.</span>
+        </div>
+        <div class="comp-row">
+          <span class="comp-name">📊 Google Fit / Apple Health</span>
+          <span class="comp-limit">Messen Aktivität, schaffen aber selten emotionale Motivation — zu datengetrieben, zu unpersönlich.</span>
+          <span class="comp-win">Kombination aus Tracking, Gamification, AR und digitalem Begleiter — deutlich persönlicher und motivierender.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTION -->
+  <section class="section reveal">
+    <div class="section-label">
+      <span class="section-letter ltr-x">→</span>
+      <span class="section-title">Action · Nächste Schritte</span>
+    </div>
+    <div class="card">
+      <div class="card-stripe stripe-x"></div>
+      <div class="card-heading">Konkrete nächste Schritte.</div>
+      <div class="action-steps">
+        <div class="action-step">
+          <div class="action-num">01</div>
+          <div>
+            <span class="action-date">Bis 15. April 2026</span>
+            <div class="action-title">Klickbaren Prototypen entwickeln</div>
+            <p class="action-desc">Einen interaktiven Prototypen erstellen, der AR-Spaziergänge, Schrittzählung und die Grundbedürfnisse von Pawly (Hunger, Glück, Energie) demonstriert — als Basis für erste Nutzertests.</p>
+          </div>
+        </div>
+        <div class="action-step">
+          <div class="action-num">02</div>
+          <div>
+            <span class="action-date">Bis 15. Mai 2026</span>
+            <div class="action-title">Erster Nutzertest mit 20–30 Personen</div>
+            <p class="action-desc">Motivation, Bedienbarkeit und tägliche Nutzung mit echten Nutzern der Zielgruppe validieren — Fokus: Wie stark ist die emotionale Bindung? Wie viele Schritte mehr werden gemacht?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="section reveal">
+    <div class="section-label">
+      <span class="section-letter ltr-s">✦</span>
+      <span class="section-title">Zusammenfassung</span>
+    </div>
+    <div class="summary-card">
+      <p>
+        Pawly verbindet <strong>Augmented Reality</strong>, emotionale Nutzerbindung und Gesundheitsförderung in einer App, die Bewegung spielerisch in den Alltag integriert. So entsteht eine Lösung, die nicht nur <strong>Schritte zählt</strong>, sondern Menschen wirklich dazu motiviert, öfter rauszugehen — und langfristig <strong>aktiv und glücklich</strong> zu bleiben.
+      </p>
+      <div class="app-badge">
+        🐾 <span>PawlyAI · Walk. Feed. Care. Like a real pet.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
